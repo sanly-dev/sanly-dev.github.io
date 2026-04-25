@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="tk" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nazar | sanly-dev</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"/>
+<style>
+/* ===== DARK THEME ===== */
+[data-theme="dark"]{
+  --bg:#0a0a0f;
+  --bg2:#11111a;
+  --bg3:#1a1a28;
+  --card:rgba(26,26,40,0.9);
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  --text3:#475569;
+  --border:rgba(124,58,237,0.2);
+  --border2:rgba(124,58,237,0.4);
+  --accent:#7c3aed;
+  --accent2:#a855f7;
+  --accent3:#06b6d4;
+  --green:#10b981;
+  --orange:#f59e0b;
+  --info-bg:rgba(124,58,237,0.1);
+  --tag-bg:rgba(124,58,237,0.12);
+  --nav-bg:rgba(10,10,15,0.85);
+  --theme-icon:"☀️";
+}
+/* ===== LIGHT THEME ===== */
+[data-theme="light"]{
+  --bg:#f8f7ff;
+  --bg2:#ffffff;
+  --bg3:#ede9fe;
+  --card:rgba(255,255,255,0.95);
+  --text:#1e1b4b;
+  --text2:#4c1d95;
+  --text3:#7c3aed;
+  --border:rgba(124,58,237,0.2);
+  --border2:rgba(124,58,237,0.5);
+  --accent:#7c3aed;
+  --accent2:#6d28d9;
+  --accent3:#0891b2;
+  --green:#059669;
+  --orange:#d97706;
+  --info-bg:rgba(124,58,237,0.06);
+  --tag-bg:rgba(124,58,237,0.08);
+  --nav-bg:rgba(248,247,255,0.9);
+  --theme-icon:"🌙";
+}
+
+*{margin:0;padding:0;box-sizing:border-box;transition:background-color 0.3s,color 0.3s,border-color 0.3s;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden;cursor:none;}
+
+/* Cursor */
+#cur{position:fixed;width:10px;height:10px;background:var(--accent2);border-radius:50%;pointer-events:none;z-index:9999;mix-blend-mode:difference;transition:transform 0.1s;}
+#cur-ring{position:fixed;width:34px;height:34px;border:1px solid var(--border2);border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.12s ease;}
+
+/* Stars — only dark */
+#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:1;transition:opacity 0.5s;}
+[data-theme="light"] #stars{opacity:0;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite alternate;}
+@keyframes twinkle{0%{opacity:0.1;}100%{opacity:0.8;}}
+
+/* Light theme decorative circles */
+#circles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity 0.5s;}
+[data-theme="light"] #circles{opacity:1;}
+.circle{position:absolute;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.08),transparent);}
+
+/* Orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;transition:background 0.5s;}
+.orb1{width:500px;height:500px;top:-100px;left:-100px;}
+[data-theme="dark"] .orb1{background:rgba(124,58,237,0.12);}
+[data-theme="light"] .orb1{background:rgba(124,58,237,0.06);}
+.orb2{width:400px;height:400px;bottom:-50px;right:-50px;}
+[data-theme="dark"] .orb2{background:rgba(6,182,212,0.08);}
+[data-theme="light"] .orb2{background:rgba(6,182,212,0.05);}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 1.5rem;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:var(--nav-bg);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-right{display:flex;align-items:center;gap:10px;}
+.lang-btns{display:flex;gap:5px;}
+.lang-btn{background:transparent;border:1px solid var(--border);color:var(--text2);padding:4px 9px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;cursor:none;transition:all 0.2s;}
+.lang-btn.active,.lang-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* Theme toggle */
+.theme-btn{background:var(--info-bg);border:1px solid var(--border);border-radius:8px;padding:6px 12px;font-size:1rem;cursor:none;transition:all 0.2s;display:flex;align-items:center;gap:6px;color:var(--text2);}
+.theme-btn:hover{border-color:var(--border2);}
+.theme-label{font-size:0.65rem;font-family:'JetBrains Mono',monospace;color:var(--text2);}
+[data-theme="dark"] .sun-icon{display:inline;}
+[data-theme="dark"] .moon-icon{display:none;}
+[data-theme="light"] .sun-icon{display:none;}
+[data-theme="light"] .moon-icon{display:inline;}
+
+/* Sections */
+section{position:relative;z-index:2;padding:6rem 1.5rem 4rem;}
+
+/* Hero */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--info-bg);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:0.68rem;color:var(--accent2);letter-spacing:0.1em;margin-bottom:1.5rem;animation:fadeUp 0.6s ease both;}
+.status-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4);}50%{box-shadow:0 0 0 5px rgba(16,185,129,0);}}
+.hero-name{font-family:'Syne',sans-serif;font-size:clamp(2.8rem,9vw,6rem);font-weight:800;line-height:0.95;margin-bottom:0.8rem;animation:fadeUp 0.6s 0.1s ease both;}
+.grad{background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:0.75rem;color:var(--text2);letter-spacing:0.15em;margin-bottom:0.5rem;animation:fadeUp 0.6s 0.15s ease both;}
+.hero-title{font-size:0.8rem;color:var(--text3);letter-spacing:0.18em;margin-bottom:1.8rem;animation:fadeUp 0.6s 0.2s ease both;}
+.hero-desc{max-width:560px;font-size:0.8rem;line-height:1.9;color:var(--text2);margin-bottom:2rem;animation:fadeUp 0.6s 0.3s ease both;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.6s 0.4s ease both;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:11px 26px;border-radius:8px;text-decoration:none;font-size:0.78rem;letter-spacing:0.05em;transition:all 0.2s;border:none;cursor:none;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text);padding:11px 26px;border-radius:8px;text-decoration:none;font-size:0.78rem;letter-spacing:0.05em;transition:all 0.2s;border:1px solid var(--border);cursor:none;}
+.btn-outline:hover{border-color:var(--border2);color:var(--accent2);transform:translateY(-2px);}
+.scroll-hint{position:absolute;bottom:1.5rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;animation:bounce 2s ease infinite;}
+.scroll-hint span{font-size:0.6rem;color:var(--text3);letter-spacing:0.2em;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(7px);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
+
+/* Cards */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.4rem;backdrop-filter:blur(10px);transition:all 0.3s;}
+.card:hover{border-color:var(--border2);transform:translateY(-3px);}
+
+/* Section header */
+.sec-tag{font-size:0.62rem;letter-spacing:0.3em;color:var(--accent2);margin-bottom:0.8rem;display:flex;align-items:center;gap:8px;justify-content:center;}
+.sec-title{font-family:'Syne',sans-serif;font-size:2rem;font-weight:800;line-height:1.1;margin-bottom:0.5rem;text-align:center;}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:900px;margin:0 auto;align-items:start;}
+.about-text{font-size:0.78rem;line-height:2;color:var(--text2);margin-bottom:1rem;}
+.info-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(124,58,237,0.08);}
+.info-row:last-child{border-bottom:none;}
+.info-row i{font-size:16px;color:var(--accent2);width:18px;flex-shrink:0;}
+.info-label{font-size:0.6rem;color:var(--text3);display:block;letter-spacing:0.1em;}
+.info-value{font-size:0.76rem;color:var(--text);}
+.info-value a{color:var(--accent3);text-decoration:none;}
+
+/* Projects */
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;max-width:900px;margin:2rem auto 0;}
+.proj-icon{font-size:2rem;margin-bottom:0.8rem;}
+.proj-title{font-family:'Syne',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:0.4rem;color:var(--text);}
+.proj-status{display:inline-flex;align-items:center;gap:5px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);color:var(--orange);padding:2px 9px;border-radius:100px;font-size:0.62rem;letter-spacing:0.1em;margin-bottom:0.8rem;}
+.proj-desc{font-size:0.72rem;line-height:1.8;color:var(--text2);margin-bottom:0.8rem;}
+.feat-list{list-style:none;}
+.feat-list li{font-size:0.72rem;color:var(--text2);padding:3px 0;display:flex;align-items:center;gap:7px;}
+.feat-list li i{color:var(--green);font-size:13px;}
+.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:0.8rem;}
+.tag{background:var(--tag-bg);border:1px solid var(--border);color:var(--accent2);padding:2px 9px;border-radius:5px;font-size:0.62rem;}
+
+/* Skills */
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0.8rem;max-width:900px;margin:2rem auto 0;}
+.skill-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;text-align:center;transition:all 0.3s;}
+.skill-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.skill-card i{font-size:1.8rem;margin-bottom:0.4rem;display:block;}
+.skill-name{font-size:0.68rem;color:var(--text2);letter-spacing:0.04em;}
+.skill-bar-wrap{margin-top:0.5rem;height:3px;background:rgba(124,58,237,0.1);border-radius:100px;overflow:hidden;}
+.skill-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));}
+
+/* Music */
+.music-wrap{max-width:480px;margin:2rem auto 0;}
+.music-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.8rem;position:relative;overflow:hidden;}
+.music-glow{position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(29,185,84,0.1),transparent);border-radius:50%;}
+.music-head{display:flex;align-items:center;gap:12px;margin-bottom:1.2rem;}
+.music-icon-wrap{width:48px;height:48px;background:linear-gradient(135deg,#1DB954,#169c46);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.music-icon-wrap i{font-size:22px;color:#fff;}
+.music-now{font-size:0.6rem;color:var(--text3);letter-spacing:0.2em;margin-bottom:2px;}
+.music-song{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);}
+.music-artist{font-size:0.75rem;color:var(--text2);margin-top:0.3rem;display:flex;align-items:center;gap:6px;}
+.music-bars{display:flex;align-items:flex-end;gap:3px;height:28px;margin-top:1.2rem;}
+.mbar{width:4px;border-radius:100px;background:linear-gradient(to top,#1DB954,#4ade80);animation:mbar var(--d) ease-in-out infinite alternate;}
+@keyframes mbar{0%{height:3px;}100%{height:var(--h);}}
+.music-heart{font-size:0.72rem;color:var(--text2);margin-top:0.8rem;display:flex;align-items:center;gap:6px;}
+.music-heart i{color:#ef4444;font-size:12px;}
+
+/* Contact */
+.contact-wrap{max-width:700px;margin:2rem auto 0;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;}
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:1.3rem;text-decoration:none;transition:all 0.3s;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;}
+.contact-card:hover{border-color:var(--border2);transform:translateY(-3px);}
+.contact-card i{font-size:1.8rem;}
+.c-label{font-size:0.6rem;color:var(--text3);letter-spacing:0.2em;}
+.c-value{font-size:0.75rem;color:var(--text);word-break:break-all;}
+
+/* Footer */
+footer{position:relative;z-index:2;text-align:center;padding:1.5rem;border-top:1px solid var(--border);}
+footer p{font-size:0.68rem;color:var(--text3);}
+footer span{color:var(--accent2);}
+
+/* Fade in */
+.fade-up{opacity:0;transform:translateY(24px);transition:all 0.55s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Lang */
+[data-lang]{display:none;}
+[data-lang].active{display:block;}
+span[data-lang]{display:none;}
+span[data-lang].active{display:inline;}
+
+@media(max-width:640px){
+  .about-grid,.projects-grid,.skills-grid,.contact-grid{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:repeat(2,1fr);}
+  .hero-name{font-size:2.5rem;}
+  nav{padding:0.8rem 1rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="stars"></div>
+<div id="circles">
+  <div class="circle" style="width:600px;height:600px;top:-150px;left:-150px;"></div>
+  <div class="circle" style="width:400px;height:400px;bottom:-100px;right:-100px;"></div>
+</div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">sanly-dev</div>
+  <div class="nav-right">
+    <div class="lang-btns">
+      <button class="lang-btn active" onclick="setLang('tm')">🇹🇲 TM</button>
+      <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+      <button class="lang-btn" onclick="setLang('ru')">🇷🇺 RU</button>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()">
+      <span class="sun-icon">☀️</span>
+      <span class="moon-icon">🌙</span>
+      <span class="theme-label" id="theme-label">GÜNDIZ</span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-badge">
+    <div class="status-dot"></div>
+    <i class="ri-map-pin-line" style="font-size:13px;"></i>
+    <span data-lang="tm" class="active">Aşgabat, Türkmenistan · Işjeň</span>
+    <span data-lang="en">Ashgabat, Turkmenistan · Active</span>
+    <span data-lang="ru">Ашгабат, Туркменистан · Активен</span>
+  </div>
+
+  <h1 class="hero-name"><span class="grad">Nazar</span></h1>
+  <p class="hero-sub">sanly-dev</p>
+  <p class="hero-title">
+    <span data-lang="tm" class="active">🛡️ KYC · 📱 OTP · 💻 BACKEND DEVELOPER</span>
+    <span data-lang="en">🛡️ KYC · 📱 OTP · 💻 BACKEND DEVELOPER</span>
+    <span data-lang="ru">🛡️ KYC · 📱 OTP · 💻 BACKEND РАЗРАБОТЧИК</span>
+  </p>
+  <p class="hero-desc">
+    <span data-lang="tm" class="active">Türkmenistany sanlylaşdyrmak üçin güýçli ulgamlar döredýärin. KYC tassyklaýjy we OTP howpsuzlyk çözgütleri meniň esasy ugrum.</span>
+    <span data-lang="en">Building powerful systems to digitalize Turkmenistan. KYC verification and OTP security solutions are my main focus.</span>
+    <span data-lang="ru">Создаю мощные системы для цифровизации Туркменистана. KYC верификация и OTP решения безопасности — мой основной фокус.</span>
+  </p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn-primary"><i class="ri-rocket-line"></i>
+      <span data-lang="tm" class="active">Proýektlerim</span>
+      <span data-lang="en">My Projects</span>
+      <span data-lang="ru">Проекты</span>
+    </a>
+    <a href="mailto:nazar.dev@sanly.tm" class="btn-outline"><i class="ri-mail-send-line"></i>
+      <span data-lang="tm" class="active">Habarlaş</span>
+      <span data-lang="en">Contact Me</span>
+      <span data-lang="ru">Связаться</span>
+    </a>
+  </div>
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <i class="ri-arrow-down-line" style="color:var(--text3);font-size:18px;"></i>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" style="padding:5rem 1.5rem;">
+  <div class="fade-up">
+    <div class="sec-tag"><i class="ri-user-3-line" style="font-size:13px;"></i>
+      <span data-lang="tm" class="active">MEN HAKYMDA</span>
+      <span data-lang="en">ABOUT ME</span>
+      <span data-lang="ru">ОБО МНЕ</span>
+    </div>
+    <h2 class="sec-title">
+      <span data-lang="tm" class="active">Salam! Men <span class="grad">Nazar</span></span>
+      <span data-lang="en">Hello! I'm <span class="grad">Nazar</span></span>
+      <span data-lang="ru">Привет! Я <span class="grad">Назар</span></span>
+    </h2>
+    <div class="about-grid" style="margin-top:2rem;">
+      <div>
+        <p class="about-text" data-lang="tm">Men Türkmenistanda ýaşaýan ýaş developer. KYC şahsyýet tassyklaýjy we OTP howpsuzlyk ulgamlary bilen meşgullanýaryn. Maksadym — Türkmenistanyň sanly ykdysadyýetine goşant goşmak.</p>
+        <p class="about-text" data-lang="en">I'm a young developer from Turkmenistan. I work on KYC identity verification and OTP security systems. My goal is to contribute to Turkmenistan's digital economy.</p>
+        <p class="about-text" data-lang="ru">Я молодой разработчик из Туркменистана. Работаю над KYC верификацией и OTP системами безопасности. Цель — внести вклад в цифровую экономику Туркменистана.</p>
+      </div>
+      <div class="card" style="padding:1.2rem;">
+        <div class="info-row">
+          <i class="ri-user-smile-line"></i>
+          <div><span class="info-label">NAME</span><span class="info-value">Nazar · sanly-dev</span></div>
+        </div>
+        <div class="info-row">
+          <i class="ri-mail-line" style="color:#EA4335!important;"></i>
+          <div><span class="info-label">EMAIL</span><span class="info-value"><a href="mailto:nazar.dev@sanly.tm">nazar.dev@sanly.tm</a></span></div>
+        </div>
+        <div class="info-row">
+          <i class="ri-phone-line" style="color:#25D366!important;"></i>
+          <div>
+            <span class="info-label"><span data-lang="tm" class="active">TELEFON</span><span data-lang="en">PHONE</span><span data-lang="ru">ТЕЛЕФОН</span></span>
+            <span class="info-value"><a href="tel:+99363761555" style="color:var(--accent3);">+993 63 761 555</a></span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-map-pin-line" style="color:var(--accent)!important;"></i>
+          <div>
+            <span class="info-label"><span data-lang="tm" class="active">ÝURT</span><span data-lang="en">COUNTRY</span><span data-lang="ru">СТРАНА</span></span>
+            <span class="info-value">🇹🇲 Turkmenistan</span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-github-line"></i>
+          <div><span class="info-label">GITHUB</span><span class="info-value"><a href="https://github.com/sanly-dev" target="_blank">sanly-dev</a></span></div>
+        </div>
+        <div class="info-row">
+          <i class="ri-focus-3-line" style="color:var(--orange)!important;"></i>
+          <div><span class="info-label">FOCUS</span><span class="info-value">KYC · OTP · Backend</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="padding:5rem 1.5rem;">
+  <div class="fade-up">
+    <div class="sec-tag"><i class="ri-rocket-line" style="font-size:13px;"></i>
+      <span data-lang="tm" class="active">PROÝEKTLERIM</span>
+      <span data-lang="en">MY PROJECTS</span>
+      <span data-lang="ru">МОИ ПРОЕКТЫ</span>
+    </div>
+    <h2 class="sec-title">
+      <span data-lang="tm" class="active">Döredýän <span class="grad">Ulgamlarym</span></span>
+      <span data-lang="en">Systems I'm <span class="grad">Building</span></span>
+      <span data-lang="ru">Системы <span class="grad">в разработке</span></span>
+    </h2>
+    <div class="projects-grid">
+      <div class="card">
+        <div class="proj-icon">🛡️</div>
+        <h3 class="proj-title">KYC Turkmenistan</h3>
+        <div class="proj-status"><i class="ri-tools-line" style="font-size:11px;"></i>
+          <span data-lang="tm" class="active">Işlenilýär</span>
+          <span data-lang="en">In Progress</span>
+          <span data-lang="ru">В разработке</span>
+        </div>
+        <p class="proj-desc">
+          <span data-lang="tm" class="active">Türkmenistan bazaryna niýetlenen doly şahsyýet tassyklaýjy ulgam.</span>
+          <span data-lang="en">Full identity verification system for the Turkmenistan market.</span>
+          <span data-lang="ru">Полная система верификации личности для рынка Туркменистана.</span>
+        </p>
+        <ul class="feat-list">
+          <li><i class="ri-check-line"></i><span data-lang="tm" class="active">Pasport / ID kart skaner</span><span data-lang="en">Passport / ID scanner</span><span data-lang="ru">Сканер паспорта / ID</span></li>
+          <li><i class="ri-check-line"></i><span data-lang="tm" class="active">Selfie + ýüz deňeşdirme</span><span data-lang="en">Selfie + face matching</span><span data-lang="ru">Селфи + сравнение лиц</span></li>
+          <li><i class="ri-check-line"></i><span data-lang="tm" class="active">Şifrli maglumat saklamak</span><span data-lang="en">Encrypted data storage</span><span data-lang="ru">Зашифрованное хранение</span></li>
+          <li><i class="ri-check-line"></i>REST API endpoints</li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">JWT</span></div>
+      </div>
+      <div class="card">
+        <div class="proj-icon">📱</div>
+        <h3 class="proj-title">OTP System TM</h3>
+        <div class="proj-status"><i class="ri-tools-line" style="font-size:11px;"></i>
+          <span data-lang="tm" class="active">Işlenilýär</span>
+          <span data-lang="en">In Progress</span>
+          <span data-lang="ru">В разработке</span>
+        </div>
+        <p class="proj-desc">
+          <span data-lang="tm" class="active">SMS we E-mail arkaly bir gezeklik parol ulgamy.</span>
+          <span data-lang="en">One-time password system via SMS and Email.</span>
+          <span data-lang="ru">Система одноразовых паролей через SMS и Email.</span>
+        </p>
+        <ul class="feat-list">
+          <li><i class="ri-check-line"></i>nazar.dev@sanly.tm → OTP</li>
+          <li><i class="ri-check-line"></i>+993 63 761 555 SMS OTP</li>
+          <li><i class="ri-check-line"></i><span data-lang="tm" class="active">6 sanly · 5 min möhlet</span><span data-lang="en">6-digit · 5 min expiry</span><span data-lang="ru">6 цифр · 5 мин</span></li>
+          <li><i class="ri-check-line"></i><span data-lang="tm" class="active">Brute-force goragy</span><span data-lang="en">Brute-force protection</span><span data-lang="ru">Защита от перебора</span></li>
+        </ul>
+        <div class="tags"><span class="tag">Python</span><span class="tag">SMTP</span><span class="tag">Redis</span><span class="tag">SMS API</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="padding:5rem 1.5rem;">
+  <div class="fade-up">
+    <div class="sec-tag"><i class="ri-tools-line" style="font-size:13px;"></i>
+      <span data-lang="tm" class="active">BAŞARNYKLARYM</span>
+      <span data-lang="en">MY SKILLS</span>
+      <span data-lang="ru">МОИ НАВЫКИ</span>
+    </div>
+    <h2 class="sec-title">Tech <span class="grad">Stack</span></h2>
+    <div class="skills-grid">
+      <div class="skill-card"><i class="ri-code-s-slash-line" style="color:#3776AB;"></i><div class="skill-name">Python</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;"></div></div></div>
+      <div class="skill-card"><i class="ri-javascript-line" style="color:#F7DF1E;"></i><div class="skill-name">JavaScript</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:60%;"></div></div></div>
+      <div class="skill-card"><i class="ri-html5-line" style="color:#E34F26;"></i><div class="skill-name">HTML5</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;"></div></div></div>
+      <div class="skill-card"><i class="ri-css3-line" style="color:#1572B6;"></i><div class="skill-name">CSS3</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%;"></div></div></div>
+      <div class="skill-card"><i class="ri-server-line" style="color:#009688;"></i><div class="skill-name">FastAPI</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:55%;"></div></div></div>
+      <div class="skill-card"><i class="ri-database-2-line" style="color:#316192;"></i><div class="skill-name">PostgreSQL</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:45%;"></div></div></div>
+      <div class="skill-card"><i class="ri-git-branch-line" style="color:#F05032;"></i><div class="skill-name">Git</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:65%;"></div></div></div>
+      <div class="skill-card"><i class="ri-shield-keyhole-line" style="color:#EB5424;"></i><div class="skill-name">JWT / OAuth</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:55%;"></div></div></div>
+      <div class="skill-card"><i class="ri-fingerprint-line" style="color:#a855f7;"></i><div class="skill-name">KYC · OTP</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:55%;"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music" style="padding:5rem 1.5rem;">
+  <div class="fade-up">
+    <div class="sec-tag"><i class="ri-music-line" style="font-size:13px;"></i>
+      <span data-lang="tm" class="active">HÄZIR DIŇLEÝÄRIN</span>
+      <span data-lang="en">NOW PLAYING</span>
+      <span data-lang="ru">СЕЙЧАС СЛУШАЮ</span>
+    </div>
+    <div class="music-wrap">
+      <div class="music-card">
+        <div class="music-glow"></div>
+        <div class="music-head">
+          <div class="music-icon-wrap"><i class="ri-spotify-line"></i></div>
+          <div>
+            <div class="music-now">
+              <span data-lang="tm" class="active">HÄZIR DIŇLEÝÄRIN</span>
+              <span data-lang="en">NOW PLAYING</span>
+              <span data-lang="ru">СЕЙЧАС СЛУШАЮ</span>
+            </div>
+            <div class="music-song">Çekin meni</div>
+          </div>
+        </div>
+        <div class="music-artist"><i class="ri-user-music-line" style="color:#1DB954;font-size:14px;"></i> Däli Däde</div>
+        <div class="music-bars" id="mbars"></div>
+        <div class="music-heart">
+          <i class="ri-heart-fill"></i>
+          <span data-lang="tm" class="active">Iň halaýan aýdymym</span>
+          <span data-lang="en">My favorite song</span>
+          <span data-lang="ru">Мой любимый трек</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="padding:5rem 1.5rem;">
+  <div class="fade-up">
+    <div class="sec-tag"><i class="ri-mail-line" style="font-size:13px;"></i>
+      <span data-lang="tm" class="active">HABARLAŞMAK</span>
+      <span data-lang="en">CONTACT ME</span>
+      <span data-lang="ru">КОНТАКТЫ</span>
+    </div>
+    <h2 class="sec-title">
+      <span data-lang="tm" class="active">Biz bilen <span class="grad">Habarlaşyň</span></span>
+      <span data-lang="en">Get in <span class="grad">Touch</span></span>
+      <span data-lang="ru">Свяжитесь <span class="grad">со мной</span></span>
+    </h2>
+    <div class="contact-wrap">
+      <div class="contact-grid">
+        <a href="mailto:nazar.dev@sanly.tm" class="contact-card">
+          <i class="ri-mail-fill" style="color:#EA4335;"></i>
+          <span class="c-label">EMAIL</span>
+          <span class="c-value">nazar.dev@sanly.tm</span>
+        </a>
+        <a href="tel:+99363761555" class="contact-card">
+          <i class="ri-phone-fill" style="color:#25D366;"></i>
+          <span class="c-label"><span data-lang="tm" class="active">TELEFON</span><span data-lang="en">PHONE</span><span data-lang="ru">ТЕЛЕФОН</span></span>
+          <span class="c-value">+993 63 761 555</span>
+        </a>
+        <a href="https://github.com/sanly-dev" target="_blank" class="contact-card">
+          <i class="ri-github-fill" style="color:var(--text);"></i>
+          <span class="c-label">GITHUB</span>
+          <span class="c-value">sanly-dev</span>
+        </a>
+        <a href="https://sanly-dev.github.io" target="_blank" class="contact-card">
+          <i class="ri-global-line" style="color:var(--accent2);"></i>
+          <span class="c-label">PORTFOLIO</span>
+          <span class="c-value">sanly-dev.github.io</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Nazar · sanly-dev</span> · 🇹🇲 Turkmenistan · <span>nazar.dev@sanly.tm</span></p>
+</footer>
+
+<script>
+// Stars
+const st=document.getElementById('stars');
+for(let i=0;i<100;i++){
+  const s=document.createElement('div');s.className='star';
+  const sz=Math.random()*2+0.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${Math.random()*3+1}s;animation-delay:${Math.random()*3}s;`;
+  st.appendChild(s);
+}
+
+// Cursor
+const cur=document.getElementById('cur'),ring=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=(mx-5)+'px';cur.style.top=(my-5)+'px';});
+(function animR(){rx+=(mx-rx-17)*0.12;ry+=(my-ry-17)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animR);})();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2.5)';ring.style.transform='scale(1.5)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';ring.style.transform='scale(1)';});
+});
+
+// Theme toggle
+function toggleTheme(){
+  const html=document.documentElement;
+  const isDark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-label').textContent=isDark?'GIJE':'GÜNDIZ';
+}
+
+// Language
+function setLang(lang){
+  document.querySelectorAll('[data-lang]').forEach(el=>{el.classList.toggle('active',el.dataset.lang===lang);});
+  document.querySelectorAll('.lang-btn').forEach((b,i)=>{b.classList.toggle('active',['tm','en','ru'][i]===lang);});
+}
+
+// Music bars
+const mb=document.getElementById('mbars');
+for(let i=0;i<18;i++){
+  const b=document.createElement('div');b.className='mbar';
+  const h=Math.floor(Math.random()*22+5);
+  b.style.cssText=`--d:${(Math.random()*0.35+0.15).toFixed(2)}s;--h:${h}px;`;
+  mb.appendChild(b);
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
