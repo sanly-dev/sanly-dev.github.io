@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="tk">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nazar | sanly-dev — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #11111a;
+  --bg3: #1a1a28;
+  --accent: #7c3aed;
+  --accent2: #a855f7;
+  --accent3: #06b6d4;
+  --green: #10b981;
+  --orange: #f59e0b;
+  --red: #ef4444;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #475569;
+  --border: rgba(124,58,237,0.2);
+  --card: rgba(26,26,40,0.8);
+  --mono: 'JetBrains Mono', monospace;
+  --sans: 'Syne', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:var(--mono);overflow-x:hidden;cursor:none;}
+
+/* Custom cursor */
+#cursor{position:fixed;width:12px;height:12px;background:var(--accent2);border-radius:50%;pointer-events:none;z-index:9999;transition:transform 0.1s;mix-blend-mode:screen;}
+#cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(168,85,247,0.4);border-radius:50%;pointer-events:none;z-index:9998;transition:all 0.15s ease;}
+
+/* Stars background */
+#stars{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden;pointer-events:none;}
+.star{position:absolute;background:#fff;border-radius:50%;animation:twinkle var(--d) ease-in-out infinite alternate;}
+@keyframes twinkle{0%{opacity:0.1;}100%{opacity:0.9;}}
+
+/* Noise texture */
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");opacity:0.4;pointer-events:none;z-index:1;}
+
+/* Glow orbs */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;}
+.orb1{width:500px;height:500px;background:rgba(124,58,237,0.12);top:-100px;left:-100px;}
+.orb2{width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-50px;right:-50px;}
+.orb3{width:300px;height:300px;background:rgba(168,85,247,0.06);top:50%;left:50%;transform:translate(-50%,-50%);}
+
+/* Nav */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(20px);background:rgba(10,10,15,0.8);border-bottom:1px solid var(--border);}
+.nav-logo{font-family:var(--sans);font-size:1.2rem;font-weight:800;background:linear-gradient(135deg,var(--accent2),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.nav-links{display:flex;gap:1.5rem;list-style:none;}
+.nav-links a{color:var(--text2);text-decoration:none;font-size:0.75rem;letter-spacing:0.1em;transition:color 0.2s;}
+.nav-links a:hover{color:var(--accent2);}
+.lang-btns{display:flex;gap:6px;}
+.lang-btn{background:transparent;border:1px solid var(--border);color:var(--text2);padding:4px 10px;border-radius:6px;font-family:var(--mono);font-size:0.7rem;cursor:none;transition:all 0.2s;}
+.lang-btn.active,.lang-btn:hover{background:var(--accent);border-color:var(--accent);color:#fff;}
+
+/* Sections */
+section{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:6rem 2rem 4rem;}
+
+/* Hero */
+.hero{flex-direction:column;text-align:center;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(124,58,237,0.1);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:0.7rem;color:var(--accent2);letter-spacing:0.1em;margin-bottom:2rem;animation:fadeUp 0.6s ease both;}
+.hero-badge i{font-size:14px;}
+.status-dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s ease infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4);}50%{box-shadow:0 0 0 6px rgba(16,185,129,0);}}
+.hero-name{font-family:var(--sans);font-size:clamp(3rem,10vw,7rem);font-weight:800;line-height:0.9;margin-bottom:1rem;animation:fadeUp 0.6s 0.1s ease both;}
+.hero-name span{display:block;}
+.grad{background:linear-gradient(135deg,var(--accent2) 0%,var(--accent3) 50%,#818cf8 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-title{font-size:0.85rem;color:var(--text2);letter-spacing:0.2em;margin-bottom:2rem;animation:fadeUp 0.6s 0.2s ease both;}
+.hero-desc{max-width:600px;font-size:0.85rem;line-height:1.8;color:var(--text2);margin-bottom:2.5rem;animation:fadeUp 0.6s 0.3s ease both;}
+.hero-btns{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;animation:fadeUp 0.6s 0.4s ease both;}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;padding:12px 28px;border-radius:8px;text-decoration:none;font-size:0.8rem;letter-spacing:0.05em;transition:all 0.2s;border:none;cursor:none;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-2px);}
+.btn-outline{display:inline-flex;align-items:center;gap:8px;background:transparent;color:var(--text);padding:12px 28px;border-radius:8px;text-decoration:none;font-size:0.8rem;letter-spacing:0.05em;transition:all 0.2s;border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--accent2);color:var(--accent2);transform:translateY(-2px);}
+
+/* Scroll indicator */
+.scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:8px;animation:bounce 2s ease infinite;}
+.scroll-hint span{font-size:0.65rem;color:var(--text3);letter-spacing:0.2em;}
+.scroll-hint i{color:var(--text3);font-size:20px;}
+@keyframes bounce{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(8px);}}
+
+/* About */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:3rem;max-width:1000px;width:100%;align-items:center;}
+.about-left{}
+.section-tag{font-size:0.65rem;letter-spacing:0.3em;color:var(--accent2);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.section-tag::after{content:'';flex:1;height:1px;background:var(--border);}
+.section-title{font-family:var(--sans);font-size:2.5rem;font-weight:800;line-height:1.1;margin-bottom:1.5rem;}
+.about-text{font-size:0.8rem;line-height:2;color:var(--text2);margin-bottom:1.5rem;}
+.about-right{}
+.info-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;backdrop-filter:blur(10px);}
+.info-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.info-row:last-child{border-bottom:none;}
+.info-row i{font-size:18px;color:var(--accent2);width:20px;flex-shrink:0;}
+.info-label{font-size:0.65rem;color:var(--text3);display:block;letter-spacing:0.1em;}
+.info-value{font-size:0.8rem;color:var(--text);}
+.info-value a{color:var(--accent3);text-decoration:none;}
+.info-value a:hover{text-decoration:underline;}
+
+/* Projects */
+.projects-wrap{max-width:1000px;width:100%;flex-direction:column;}
+.projects-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:3rem;}
+.project-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;backdrop-filter:blur(10px);transition:all 0.3s;position:relative;overflow:hidden;}
+.project-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(124,58,237,0.05),transparent);opacity:0;transition:opacity 0.3s;}
+.project-card:hover{border-color:rgba(124,58,237,0.5);transform:translateY(-4px);}
+.project-card:hover::before{opacity:1;}
+.project-icon{font-size:2.5rem;margin-bottom:1rem;}
+.project-title{font-family:var(--sans);font-size:1.3rem;font-weight:700;margin-bottom:0.5rem;}
+.project-status{display:inline-flex;align-items:center;gap:6px;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--orange);padding:3px 10px;border-radius:100px;font-size:0.65rem;letter-spacing:0.1em;margin-bottom:1rem;}
+.project-desc{font-size:0.75rem;line-height:1.8;color:var(--text2);margin-bottom:1rem;}
+.project-tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2);color:var(--accent2);padding:3px 10px;border-radius:6px;font-size:0.65rem;}
+.project-features{list-style:none;margin-top:1rem;}
+.project-features li{font-size:0.75rem;color:var(--text2);padding:4px 0;display:flex;align-items:center;gap:8px;}
+.project-features li i{color:var(--green);font-size:14px;}
+
+/* Skills */
+.skills-wrap{max-width:1000px;width:100%;flex-direction:column;}
+.skills-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-top:3rem;}
+.skill-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;transition:all 0.3s;backdrop-filter:blur(10px);}
+.skill-card:hover{border-color:rgba(124,58,237,0.5);transform:translateY(-4px);}
+.skill-card i{font-size:2rem;margin-bottom:0.5rem;display:block;}
+.skill-name{font-size:0.7rem;color:var(--text2);letter-spacing:0.05em;}
+.skill-bar-wrap{margin-top:0.5rem;height:3px;background:rgba(255,255,255,0.05);border-radius:100px;overflow:hidden;}
+.skill-bar{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s ease;}
+
+/* Music */
+.music-section{flex-direction:column;}
+.music-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;max-width:500px;width:100%;backdrop-filter:blur(10px);position:relative;overflow:hidden;}
+.music-card::before{content:'';position:absolute;top:-50%;right:-30%;width:200px;height:200px;background:radial-gradient(circle,rgba(16,185,129,0.1),transparent);border-radius:50%;}
+.music-header{display:flex;align-items:center;gap:12px;margin-bottom:1.5rem;}
+.music-icon{width:50px;height:50px;background:linear-gradient(135deg,#1DB954,#169c46);border-radius:12px;display:flex;align-items:center;justify-content:center;}
+.music-icon i{font-size:24px;color:#fff;}
+.music-label{font-size:0.65rem;color:var(--text3);letter-spacing:0.2em;}
+.music-title{font-family:var(--sans);font-size:1.4rem;font-weight:700;}
+.music-artist{font-size:0.8rem;color:var(--text2);margin-top:0.5rem;}
+.music-bars{display:flex;align-items:flex-end;gap:3px;height:30px;margin-top:1.5rem;}
+.music-bar{width:4px;border-radius:100px;background:linear-gradient(to top,#1DB954,#4ade80);animation:musicBar var(--d) ease-in-out infinite alternate;}
+@keyframes musicBar{0%{height:4px;}100%{height:var(--h);}}
+.music-note{font-size:0.75rem;color:var(--text2);margin-top:1rem;font-style:italic;}
+
+/* Contact */
+.contact-wrap{max-width:700px;width:100%;flex-direction:column;text-align:center;}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:2.5rem;}
+.contact-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.5rem;text-decoration:none;transition:all 0.3s;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.contact-card:hover{border-color:rgba(124,58,237,0.5);transform:translateY(-4px);}
+.contact-card i{font-size:2rem;}
+.contact-card .c-label{font-size:0.65rem;color:var(--text3);letter-spacing:0.2em;}
+.contact-card .c-value{font-size:0.8rem;color:var(--text);}
+.c-email i{color:#EA4335;}
+.c-phone i{color:#25D366;}
+.c-github i{color:#e2e8f0;}
+.c-telegram i{color:#2AABEE;}
+
+/* Footer */
+footer{position:relative;z-index:2;text-align:center;padding:2rem;border-top:1px solid var(--border);}
+footer p{font-size:0.7rem;color:var(--text3);}
+footer span{color:var(--accent2);}
+
+/* Animations */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{opacity:0;transform:translateY(30px);transition:all 0.6s ease;}
+.fade-up.visible{opacity:1;transform:translateY(0);}
+
+/* Lang content */
+[data-lang]{display:none;}
+[data-lang].active{display:block;}
+span[data-lang]{display:none;}
+span[data-lang].active{display:inline;}
+
+/* Responsive */
+@media(max-width:768px){
+  .about-grid,.projects-grid,.skills-grid,.contact-grid{grid-template-columns:1fr;}
+  .skills-grid{grid-template-columns:repeat(2,1fr);}
+  .nav-links{display:none;}
+  .hero-name{font-size:3rem;}
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<div id="stars"></div>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">sanly-dev</div>
+  <ul class="nav-links">
+    <li><a href="#about"><i class="ri-user-line"></i> <span data-lang="tm" class="active">Hakynda</span><span data-lang="en">About</span><span data-lang="ru">Обо мне</span></a></li>
+    <li><a href="#projects"><i class="ri-code-box-line"></i> <span data-lang="tm" class="active">Proýektler</span><span data-lang="en">Projects</span><span data-lang="ru">Проекты</span></a></li>
+    <li><a href="#skills"><i class="ri-tools-line"></i> <span data-lang="tm" class="active">Başarny</span><span data-lang="en">Skills</span><span data-lang="ru">Навыки</span></a></li>
+    <li><a href="#contact"><i class="ri-mail-line"></i> <span data-lang="tm" class="active">Habarlaş</span><span data-lang="en">Contact</span><span data-lang="ru">Контакты</span></a></li>
+  </ul>
+  <div class="lang-btns">
+    <button class="lang-btn active" onclick="setLang('tm')">🇹🇲 TM</button>
+    <button class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+    <button class="lang-btn" onclick="setLang('ru')">🇷🇺 RU</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-badge">
+    <div class="status-dot"></div>
+    <i class="ri-map-pin-line"></i>
+    <span data-lang="tm" class="active">Aşgabat, Türkmenistan · Işjeň</span>
+    <span data-lang="en">Ashgabat, Turkmenistan · Active</span>
+    <span data-lang="ru">Ашгабат, Туркменистан · Активен</span>
+  </div>
+
+  <h1 class="hero-name">
+    <span class="grad">Nazar</span>
+    <span style="color:var(--text2);font-size:0.5em;font-weight:400;letter-spacing:0.2em;">
+      <span data-lang="tm" class="active">aka sanly-dev</span>
+      <span data-lang="en">aka sanly-dev</span>
+      <span data-lang="ru">aka sanly-dev</span>
+    </span>
+  </h1>
+
+  <p class="hero-title">
+    <span data-lang="tm" class="active">🛡️ KYC · 📱 OTP · 💻 BACKEND DEVELOPER</span>
+    <span data-lang="en">🛡️ KYC · 📱 OTP · 💻 BACKEND DEVELOPER</span>
+    <span data-lang="ru">🛡️ KYC · 📱 OTP · 💻 BACKEND РАЗРАБОТЧИК</span>
+  </p>
+
+  <p class="hero-desc">
+    <span data-lang="tm" class="active">Türkmenistany sanlylaşdyrmak üçin güýçli ulgamlar döredýärin. KYC tassyklaýjy we OTP howpsuzlyk çözgütleri meniň esasy ugrum.</span>
+    <span data-lang="en">Building powerful systems to digitalize Turkmenistan. KYC verification and OTP security solutions are my main focus.</span>
+    <span data-lang="ru">Создаю мощные системы для цифровизации Туркменистана. KYC верификация и OTP решения безопасности — мой основной фокус.</span>
+  </p>
+
+  <div class="hero-btns">
+    <a href="#projects" class="btn-primary"><i class="ri-rocket-line"></i>
+      <span data-lang="tm" class="active">Proýektlerim</span>
+      <span data-lang="en">My Projects</span>
+      <span data-lang="ru">Мои проекты</span>
+    </a>
+    <a href="mailto:nazar.dev@sanly.tm" class="btn-outline"><i class="ri-mail-send-line"></i>
+      <span data-lang="tm" class="active">Habarlaş</span>
+      <span data-lang="en">Contact Me</span>
+      <span data-lang="ru">Связаться</span>
+    </a>
+  </div>
+
+  <div class="scroll-hint">
+    <span>SCROLL</span>
+    <i class="ri-arrow-down-line"></i>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid fade-up">
+    <div class="about-left">
+      <div class="section-tag">
+        <i class="ri-user-3-line"></i>
+        <span data-lang="tm" class="active">MEN HAKYMDA</span>
+        <span data-lang="en">ABOUT ME</span>
+        <span data-lang="ru">ОБО МНЕ</span>
+      </div>
+      <h2 class="section-title">
+        <span data-lang="tm" class="active">Salam! <br/>Men <span class="grad">Nazar</span></span>
+        <span data-lang="en">Hello! <br/>I'm <span class="grad">Nazar</span></span>
+        <span data-lang="ru">Привет! <br/>Я <span class="grad">Назар</span></span>
+      </h2>
+      <p class="about-text" data-lang="tm">Men Türkmenistanda ýaşaýan ýaş developer. KYC şahsyýet tassyklaýjy we OTP howpsuzlyk ulgamlary bilen meşgullanýaryn. Maksadym — Türkmenistanyň sanly ykdysadyýetine goşant goşmak.</p>
+      <p class="about-text" data-lang="en">I'm a young developer from Turkmenistan. I work on KYC identity verification and OTP security systems. My goal is to contribute to Turkmenistan's digital economy.</p>
+      <p class="about-text" data-lang="ru">Я молодой разработчик из Туркменистана. Работаю над KYC верификацией личности и OTP системами безопасности. Моя цель — внести вклад в цифровую экономику Туркменистана.</p>
+    </div>
+    <div class="about-right">
+      <div class="info-card">
+        <div class="info-row">
+          <i class="ri-user-smile-line"></i>
+          <div>
+            <span class="info-label">
+              <span data-lang="tm" class="active">Adym</span>
+              <span data-lang="en">Name</span>
+              <span data-lang="ru">Имя</span>
+            </span>
+            <span class="info-value">Nazar · sanly-dev</span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-mail-line" style="color:#EA4335;"></i>
+          <div>
+            <span class="info-label">Email</span>
+            <span class="info-value"><a href="mailto:nazar.dev@sanly.tm">nazar.dev@sanly.tm</a></span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-phone-line" style="color:#25D366;"></i>
+          <div>
+            <span class="info-label">
+              <span data-lang="tm" class="active">Telefon</span>
+              <span data-lang="en">Phone</span>
+              <span data-lang="ru">Телефон</span>
+            </span>
+            <span class="info-value"><a href="tel:+99363761555">+993 63 761 555</a></span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-map-pin-line" style="color:#6E40C9;"></i>
+          <div>
+            <span class="info-label">
+              <span data-lang="tm" class="active">Ýurt</span>
+              <span data-lang="en">Country</span>
+              <span data-lang="ru">Страна</span>
+            </span>
+            <span class="info-value">🇹🇲 Turkmenistan, Ashgabat</span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-github-line"></i>
+          <div>
+            <span class="info-label">GitHub</span>
+            <span class="info-value"><a href="https://github.com/sanly-dev" target="_blank">github.com/sanly-dev</a></span>
+          </div>
+        </div>
+        <div class="info-row">
+          <i class="ri-focus-3-line" style="color:#f59e0b;"></i>
+          <div>
+            <span class="info-label">
+              <span data-lang="tm" class="active">Ugur</span>
+              <span data-lang="en">Focus</span>
+              <span data-lang="ru">Фокус</span>
+            </span>
+            <span class="info-value">KYC · OTP · Backend · Security</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="min-height:auto;padding:5rem 2rem;">
+  <div class="projects-wrap fade-up">
+    <div style="text-align:center;">
+      <div class="section-tag" style="justify-content:center;">
+        <i class="ri-rocket-line"></i>
+        <span data-lang="tm" class="active">PROÝEKTLERIM</span>
+        <span data-lang="en">MY PROJECTS</span>
+        <span data-lang="ru">МОИ ПРОЕКТЫ</span>
+      </div>
+      <h2 class="section-title">
+        <span data-lang="tm" class="active">Döredýän <span class="grad">Ulgamlarym</span></span>
+        <span data-lang="en">Systems I'm <span class="grad">Building</span></span>
+        <span data-lang="ru">Системы которые я <span class="grad">Создаю</span></span>
+      </h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-icon">🛡️</div>
+        <h3 class="project-title">KYC Turkmenistan</h3>
+        <div class="project-status"><i class="ri-tools-line"></i>
+          <span data-lang="tm" class="active">Işlenilýär</span>
+          <span data-lang="en">In Progress</span>
+          <span data-lang="ru">В разработке</span>
+        </div>
+        <p class="project-desc">
+          <span data-lang="tm" class="active">Türkmenistan bazaryna niýetlenen doly şahsyýet tassyklaýjy ulgam. Pasport, ID kart we selfie arkaly tassyklamak.</span>
+          <span data-lang="en">Full identity verification system for the Turkmenistan market. Verification via passport, ID card and selfie.</span>
+          <span data-lang="ru">Полная система верификации личности для рынка Туркменистана. Верификация через паспорт, ID карту и селфи.</span>
+        </p>
+        <ul class="project-features">
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">Pasport / ID kart skaner</span><span data-lang="en">Passport / ID card scanner</span><span data-lang="ru">Сканер паспорта / ID</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">Selfie + ýüz deňeşdirme</span><span data-lang="en">Selfie + face matching</span><span data-lang="ru">Селфи + сравнение лиц</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">Şifrli maglumat saklamak</span><span data-lang="en">Encrypted data storage</span><span data-lang="ru">Зашифрованное хранение</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">REST API endpoint-lar</span><span data-lang="en">REST API endpoints</span><span data-lang="ru">REST API эндпоинты</span></li>
+        </ul>
+        <div class="project-tags" style="margin-top:1rem;">
+          <span class="tag">Python</span><span class="tag">FastAPI</span><span class="tag">PostgreSQL</span><span class="tag">JWT</span>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-icon">📱</div>
+        <h3 class="project-title">OTP System TM</h3>
+        <div class="project-status"><i class="ri-tools-line"></i>
+          <span data-lang="tm" class="active">Işlenilýär</span>
+          <span data-lang="en">In Progress</span>
+          <span data-lang="ru">В разработке</span>
+        </div>
+        <p class="project-desc">
+          <span data-lang="tm" class="active">SMS we E-mail arkaly bir gezeklik parol ulgamy. +993 Türkmenistan nomerlerine we nazar.dev@sanly.tm arkaly işleýär.</span>
+          <span data-lang="en">One-time password system via SMS and Email. Works with +993 Turkmenistan numbers and via nazar.dev@sanly.tm.</span>
+          <span data-lang="ru">Система одноразовых паролей через SMS и Email. Работает с номерами +993 Туркменистана и через nazar.dev@sanly.tm.</span>
+        </p>
+        <ul class="project-features">
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">Email OTP — nazar.dev@sanly.tm</span><span data-lang="en">Email OTP — nazar.dev@sanly.tm</span><span data-lang="ru">Email OTP — nazar.dev@sanly.tm</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">SMS OTP — +993 63 761 555</span><span data-lang="en">SMS OTP — +993 63 761 555</span><span data-lang="ru">SMS OTP — +993 63 761 555</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">6 sanly · 5 min möhlet</span><span data-lang="en">6-digit · 5 min expiry</span><span data-lang="ru">6 цифр · истекает 5 мин</span></li>
+          <li><i class="ri-check-line"></i> <span data-lang="tm" class="active">Brute-force goragy</span><span data-lang="en">Brute-force protection</span><span data-lang="ru">Защита от перебора</span></li>
+        </ul>
+        <div class="project-tags" style="margin-top:1rem;">
+          <span class="tag">Python</span><span class="tag">SMTP</span><span class="tag">Redis</span><span class="tag">SMS API</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="min-height:auto;padding:5rem 2rem;">
+  <div class="skills-wrap fade-up">
+    <div style="text-align:center;">
+      <div class="section-tag" style="justify-content:center;">
+        <i class="ri-tools-line"></i>
+        <span data-lang="tm" class="active">BAŞARNYKLARYM</span>
+        <span data-lang="en">MY SKILLS</span>
+        <span data-lang="ru">МОИ НАВЫКИ</span>
+      </div>
+      <h2 class="section-title">
+        <span data-lang="tm" class="active">Tech <span class="grad">Stack</span></span>
+        <span data-lang="en">Tech <span class="grad">Stack</span></span>
+        <span data-lang="ru">Tech <span class="grad">Stack</span></span>
+      </h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-card"><i class="ri-code-s-slash-line" style="color:#3776AB;"></i><div class="skill-name">Python</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;"></div></div></div>
+      <div class="skill-card"><i class="ri-javascript-line" style="color:#F7DF1E;"></i><div class="skill-name">JavaScript</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:60%;"></div></div></div>
+      <div class="skill-card"><i class="ri-html5-line" style="color:#E34F26;"></i><div class="skill-name">HTML5</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:80%;"></div></div></div>
+      <div class="skill-card"><i class="ri-css3-line" style="color:#1572B6;"></i><div class="skill-name">CSS3</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:75%;"></div></div></div>
+      <div class="skill-card"><i class="ri-server-line" style="color:#009688;"></i><div class="skill-name">FastAPI</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:55%;"></div></div></div>
+      <div class="skill-card"><i class="ri-database-2-line" style="color:#316192;"></i><div class="skill-name">PostgreSQL</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:45%;"></div></div></div>
+      <div class="skill-card"><i class="ri-git-branch-line" style="color:#F05032;"></i><div class="skill-name">Git</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:65%;"></div></div></div>
+      <div class="skill-card"><i class="ri-docker-line" style="color:#2CA5E0;"></i><div class="skill-name">Docker</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:30%;"></div></div></div>
+      <div class="skill-card"><i class="ri-shield-keyhole-line" style="color:#EB5424;"></i><div class="skill-name">JWT / OAuth</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:55%;"></div></div></div>
+      <div class="skill-card"><i class="ri-mail-send-line" style="color:#EA4335;"></i><div class="skill-name">SMTP / Email</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:70%;"></div></div></div>
+      <div class="skill-card"><i class="ri-fingerprint-line" style="color:#a855f7;"></i><div class="skill-name">KYC Systems</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:50%;"></div></div></div>
+      <div class="skill-card"><i class="ri-lock-password-line" style="color:#06b6d4;"></i><div class="skill-name">OTP Systems</div><div class="skill-bar-wrap"><div class="skill-bar" style="width:60%;"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- MUSIC -->
+<section id="music" style="min-height:auto;padding:5rem 2rem;" class="music-section">
+  <div class="section-tag" style="justify-content:center;margin-bottom:1rem;">
+    <i class="ri-music-line"></i>
+    <span data-lang="tm" class="active">HÄZIR DIŇLEÝÄRIN</span>
+    <span data-lang="en">NOW PLAYING</span>
+    <span data-lang="ru">СЕЙЧАС СЛУШАЮ</span>
+  </div>
+  <div class="music-card fade-up">
+    <div class="music-header">
+      <div class="music-icon"><i class="ri-spotify-line"></i></div>
+      <div>
+        <div class="music-label">
+          <span data-lang="tm" class="active">HÄZIR DIŇLEÝÄRIN</span>
+          <span data-lang="en">NOW PLAYING</span>
+          <span data-lang="ru">СЕЙЧАС СЛУШАЮ</span>
+        </div>
+        <div class="music-title">Çekin meni</div>
+      </div>
+    </div>
+    <div style="font-size:1rem;color:var(--text2);display:flex;align-items:center;gap:8px;">
+      <i class="ri-user-music-line" style="color:#1DB954;"></i> Dahi
+    </div>
+    <div class="music-bars" id="musicBars"></div>
+    <div class="music-note">
+      <i class="ri-heart-fill" style="color:#ef4444;font-size:12px;"></i>
+      <span data-lang="tm" class="active"> Iň halaýan aýdymym</span>
+      <span data-lang="en"> My favorite song</span>
+      <span data-lang="ru"> Мой любимый трек</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="min-height:auto;padding:5rem 2rem;">
+  <div class="contact-wrap fade-up" style="margin:0 auto;">
+    <div class="section-tag" style="justify-content:center;">
+      <i class="ri-mail-line"></i>
+      <span data-lang="tm" class="active">HABARLAŞMAK</span>
+      <span data-lang="en">CONTACT ME</span>
+      <span data-lang="ru">КОНТАКТЫ</span>
+    </div>
+    <h2 class="section-title">
+      <span data-lang="tm" class="active">Biz bilen <span class="grad">Habarlaşyň</span></span>
+      <span data-lang="en">Get in <span class="grad">Touch</span></span>
+      <span data-lang="ru">Свяжитесь <span class="grad">со мной</span></span>
+    </h2>
+    <p style="color:var(--text2);font-size:0.8rem;line-height:1.8;margin-top:1rem;">
+      <span data-lang="tm" class="active">KYC, OTP ýa-da islendik proýekt barada gepleşmek isleseňiz, habarlaşyň!</span>
+      <span data-lang="en">Want to discuss KYC, OTP or any project? Feel free to reach out!</span>
+      <span data-lang="ru">Хотите обсудить KYC, OTP или любой проект? Свяжитесь со мной!</span>
+    </p>
+    <div class="contact-grid">
+      <a href="mailto:nazar.dev@sanly.tm" class="contact-card c-email">
+        <i class="ri-mail-fill"></i>
+        <span class="c-label">EMAIL</span>
+        <span class="c-value">nazar.dev@sanly.tm</span>
+      </a>
+      <a href="tel:+99363761555" class="contact-card c-phone">
+        <i class="ri-phone-fill"></i>
+        <span class="c-label">
+          <span data-lang="tm" class="active">TELEFON</span>
+          <span data-lang="en">PHONE</span>
+          <span data-lang="ru">ТЕЛЕФОН</span>
+        </span>
+        <span class="c-value">+993 63 761 555</span>
+      </a>
+      <a href="https://github.com/sanly-dev" target="_blank" class="contact-card c-github">
+        <i class="ri-github-fill"></i>
+        <span class="c-label">GITHUB</span>
+        <span class="c-value">sanly-dev</span>
+      </a>
+      <a href="https://t.me/sanly_dev" class="contact-card c-telegram">
+        <i class="ri-telegram-fill"></i>
+        <span class="c-label">TELEGRAM</span>
+        <span class="c-value">@sanly_dev</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 <span>Nazar · sanly-dev</span> · 🇹🇲 Turkmenistan · <span>nazar.dev@sanly.tm</span></p>
+</footer>
+
+<script>
+// Stars
+const starsEl = document.getElementById('stars');
+for(let i=0;i<120;i++){
+  const s=document.createElement('div');
+  s.className='star';
+  const size=Math.random()*2.5+0.5;
+  s.style.cssText=`width:${size}px;height:${size}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${Math.random()*3+1}s;animation-delay:${Math.random()*3}s;`;
+  starsEl.appendChild(s);
+}
+
+// Cursor
+const cur=document.getElementById('cursor');
+const ring=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=(mx-6)+'px';cur.style.top=(my-6)+'px';});
+function animRing(){rx+=(mx-rx-18)*0.12;ry+=(my-ry-18)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cur.style.transform='scale(2)';ring.style.transform='scale(1.5)';});
+  el.addEventListener('mouseleave',()=>{cur.style.transform='scale(1)';ring.style.transform='scale(1)';});
+});
+
+// Music bars
+const mb=document.getElementById('musicBars');
+for(let i=0;i<20;i++){
+  const b=document.createElement('div');
+  const h=Math.floor(Math.random()*24+6);
+  b.className='music-bar';
+  b.style.cssText=`--d:${(Math.random()*0.4+0.2).toFixed(2)}s;--h:${h}px;`;
+  mb.appendChild(b);
+}
+
+// Language switcher
+function setLang(lang){
+  document.querySelectorAll('[data-lang]').forEach(el=>{
+    el.classList.toggle('active', el.dataset.lang===lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach((btn,i)=>{
+    btn.classList.toggle('active',['tm','en','ru'][i]===lang);
+  });
+}
+
+// Scroll reveal
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.1});
+document.querySelectorAll('.fade-up').forEach(el=>obs.observe(el));
+</script>
+</body>
+</html>
